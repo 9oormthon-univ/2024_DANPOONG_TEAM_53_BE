@@ -1,4 +1,4 @@
-package com._roomthon.irumso;
+package com.groomthon.irumso;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
