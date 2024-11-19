@@ -18,10 +18,18 @@ repositories {
 }
 
 dependencies {
+<<<<<<< HEAD
 	// Spring Boot
+=======
+>>>>>>> main
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'io.jsonwebtoken:jjwt:0.9.0'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
 
+<<<<<<< HEAD
 	// Security and OAuth
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.7.10'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -52,6 +60,15 @@ dependencies {
 	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+=======
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+>>>>>>> main
 }
 
 tasks.named('test') {
