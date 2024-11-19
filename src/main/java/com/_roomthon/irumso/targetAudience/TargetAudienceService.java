@@ -1,10 +1,12 @@
 package com._roomthon.irumso.targetAudience;
 
 import com._roomthon.irumso.policy.Gender;
+import com._roomthon.irumso.policy.SupportPolicyService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -12,6 +14,7 @@ import java.util.Map;
 public class TargetAudienceService {
 
     private final TargetAudienceRepository targetAudienceRepository;
+    private final SupportPolicyService supportPolicyService;
 
     @Transactional
     public void saveTargetAudienceIfValid(Map<String, Object> apiResponse) {
@@ -66,9 +69,29 @@ public class TargetAudienceService {
         targetAudience.setFromAge(parseInt(apiResponse.get("JA0110")));
         targetAudience.setToAge(parseInt(apiResponse.get("JA0111")));
 
-        targetAudience.setServiceId(String.valueOf(apiResponse.get("서비스ID")));
+        String serviceID = String.valueOf(apiResponse.get("서비스ID"));
+        targetAudience.setServiceId(serviceID);
 
         targetAudienceRepository.save(targetAudience);
+    }
+
+    @Transactional
+    public void processAllTargetAudiences() {
+        // 1. TargetAudience 전체 조회
+        List<TargetAudience> targetAudiences = targetAudienceRepository.findAll();
+
+        // 2. 각 TargetAudience의 serviceId로 fetchAndSaveSupportPolicy 호출
+        targetAudiences.forEach(targetAudience -> {
+            String serviceId = targetAudience.getServiceId();
+            if (serviceId != null && !serviceId.isEmpty()) {
+                try {
+                    supportPolicyService.fetchAndSaveSupportPolicy(serviceId);
+                } catch (Exception e) {
+                    // 예외 처리 (로그 출력 등)
+                    System.err.println("Error processing serviceId: " + serviceId + ", " + e.getMessage());
+                }
+            }
+        });
     }
 
     private int parseInt(Object value) {

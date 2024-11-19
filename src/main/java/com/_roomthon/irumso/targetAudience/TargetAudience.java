@@ -1,6 +1,7 @@
 package com._roomthon.irumso.targetAudience;
 
 import com._roomthon.irumso.policy.Gender;
+import com._roomthon.irumso.policy.SupportPolicy;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,4 +51,7 @@ public class TargetAudience {
 
     @Column(name = "above_200")
     private boolean above_200;
+
+    @OneToOne(mappedBy = "targetAudience") // SupportPolicy에서 관리
+    private SupportPolicy supportPolicy;
 }
