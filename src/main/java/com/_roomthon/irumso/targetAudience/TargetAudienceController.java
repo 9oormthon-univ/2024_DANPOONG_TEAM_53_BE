@@ -1,6 +1,8 @@
 package com._roomthon.irumso.targetAudience;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -43,5 +45,11 @@ public class TargetAudienceController {
                     // 에러 처리
                     return Mono.just("Error occurred: " + e.getMessage());
                 });
+    }
+
+    @PostMapping("/process-all")
+    public ResponseEntity<String> processAll() {
+        targetAudienceService.processAllTargetAudiences();
+        return ResponseEntity.ok("Processing all TargetAudience entities started.");
     }
 }
