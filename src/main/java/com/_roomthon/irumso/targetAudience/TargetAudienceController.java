@@ -1,10 +1,8 @@
 package com._roomthon.irumso.targetAudience;
 
+import com._roomthon.irumso.policy.detailPolicy.DetailPolicyService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -16,16 +14,20 @@ import java.util.Map;
 public class TargetAudienceController {
 
     private final TargetAudienceService targetAudienceService;
+    private final DetailPolicyService detailPolicyService;
     private final WebClient webClient;
 
-    public TargetAudienceController(TargetAudienceService targetAudienceService, WebClient.Builder webClientBuilder) {
+    public TargetAudienceController(TargetAudienceService targetAudienceService,
+                                    DetailPolicyService detailPolicyService,
+                                    WebClient.Builder webClientBuilder) {
         this.targetAudienceService = targetAudienceService;
+        this.detailPolicyService = detailPolicyService;
         this.webClient = webClientBuilder.baseUrl("https://api.odcloud.kr/api").build();
     }
 
     @GetMapping("/fetch-and-save")
-    public Mono<String> fetchAndSaveData() {
-        String apiUrl = "/gov24/v3/supportConditions?page=1&perPage=10&serviceKey=gh415FmQZbT19PwzW6hTUvHqiavk4ThTPC2T8GGjByq9rCcoXU5fNdlYbm8eIfE6GJAeiH9LAm5TMXfeC5D/Fw==";
+    public Mono<String> fetchAndSaveData(@RequestParam(name = "page") int page, @RequestParam(name = "perPage") int perPage) {
+        String apiUrl = String.format("/gov24/v3/supportConditions?page=%d&perPage=%d&serviceKey=gh415FmQZbT19PwzW6hTUvHqiavk4ThTPC2T8GGjByq9rCcoXU5fNdlYbm8eIfE6GJAeiH9LAm5TMXfeC5D/Fw==", page, perPage);
 
         return webClient.get()
                 .uri(apiUrl)
@@ -50,6 +52,13 @@ public class TargetAudienceController {
     @PostMapping("/process-all")
     public ResponseEntity<String> processAll() {
         targetAudienceService.processAllTargetAudiences();
+        return ResponseEntity.ok("Processing all TargetAudience entities started.");
+    }
+
+    @PostMapping("/process-detail")
+    public ResponseEntity<String> processDetail(@RequestParam("page") int page,
+                                                @RequestParam("perPage") int perPage) {
+        detailPolicyService.fetchAndSaveSupportPolicy(page, perPage);
         return ResponseEntity.ok("Processing all TargetAudience entities started.");
     }
 }

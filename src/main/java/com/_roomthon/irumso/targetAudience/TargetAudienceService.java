@@ -1,13 +1,14 @@
 package com._roomthon.irumso.targetAudience;
 
 import com._roomthon.irumso.policy.Gender;
-import com._roomthon.irumso.policy.SupportPolicyService;
+import com._roomthon.irumso.policy.supportPolicy.SupportPolicyService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,6 +19,13 @@ public class TargetAudienceService {
 
     @Transactional
     public void saveTargetAudienceIfValid(Map<String, Object> apiResponse) {
+        String serviceID = String.valueOf(apiResponse.get("서비스ID"));
+        Optional<TargetAudience> targetAudienceByServiceId = targetAudienceRepository.findByServiceId(serviceID);
+
+        if (targetAudienceByServiceId.isPresent()) {
+            return;
+        }
+
         // 필수 조건: JA0320, JA0326, JA0327 중 하나라도 "Y"이어야 저장
         if (!("Y".equals(apiResponse.get("JA0320")) ||
                 "Y".equals(apiResponse.get("JA0326")) ||
@@ -69,7 +77,6 @@ public class TargetAudienceService {
         targetAudience.setFromAge(parseInt(apiResponse.get("JA0110")));
         targetAudience.setToAge(parseInt(apiResponse.get("JA0111")));
 
-        String serviceID = String.valueOf(apiResponse.get("서비스ID"));
         targetAudience.setServiceId(serviceID);
 
         targetAudienceRepository.save(targetAudience);
