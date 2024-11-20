@@ -1,4 +1,4 @@
-package com._roomthon.irumso.config.jwt;
+package com._roomthon.irumso.global.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

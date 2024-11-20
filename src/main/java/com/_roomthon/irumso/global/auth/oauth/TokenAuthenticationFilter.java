@@ -1,6 +1,6 @@
-package com._roomthon.irumso.config.oauth;
+package com._roomthon.irumso.global.auth.oauth;
 
-import com._roomthon.irumso.config.jwt.TokenProvider;
+import com._roomthon.irumso.global.auth.jwt.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
