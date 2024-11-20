@@ -1,4 +1,4 @@
-package com._roomthon.irumso.policy;
+package com._roomthon.irumso.policy.supportPolicy;
 
 import com._roomthon.irumso.targetAudience.TargetAudience;
 import com._roomthon.irumso.targetAudience.TargetAudienceRepository;
@@ -31,7 +31,7 @@ public class SupportPolicyService {
         // API 호출하여 데이터를 가져옵니다.
         Map<String, Object> response = webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/serviceDetail")
-                        .queryParam("serviceId", serviceId)
+                        .queryParam("cond[서비스ID::EQ]", serviceId)
                         .queryParam("serviceKey", "gh415FmQZbT19PwzW6hTUvHqiavk4ThTPC2T8GGjByq9rCcoXU5fNdlYbm8eIfE6GJAeiH9LAm5TMXfeC5D/Fw==")
                         .build())
                 .retrieve()
@@ -39,15 +39,15 @@ public class SupportPolicyService {
                 .block();
 
         // 응답에서 data 항목을 List로 추출합니다.
-        List<Map<String, Object>> dataList = (List<Map<String, Object>>) response.get("data");
+        List<Map<String, Object>> newDataList = (List<Map<String, Object>>) response.get("data");
 
         // dataList가 비어 있지 않으면 데이터를 처리합니다.
-        if (dataList != null && !dataList.isEmpty()) {
-            for (Map<String, Object> data : dataList) {
+        if (newDataList != null && !newDataList.isEmpty()) {
+            for (Map<String, Object> data : newDataList) {
                 // 서비스ID가 맞는지 확인
                 String fetchedServiceId = (String) data.get("서비스ID");
                 if (fetchedServiceId != null && !fetchedServiceId.equals(serviceId)) {
-                    continue;  // serviceId가 다르면 해당 데이터는 건너뜁니다.
+                    continue;
                 }
 
                 SupportPolicy supportPolicy = new SupportPolicy();

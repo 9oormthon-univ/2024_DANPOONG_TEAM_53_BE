@@ -1,4 +1,4 @@
-package com._roomthon.irumso.policy;
+package com._roomthon.irumso.policy.supportPolicy;
 
 import com._roomthon.irumso.targetAudience.TargetAudience;
 import jakarta.persistence.*;

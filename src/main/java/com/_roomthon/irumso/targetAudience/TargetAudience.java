@@ -1,7 +1,7 @@
 package com._roomthon.irumso.targetAudience;
 
 import com._roomthon.irumso.policy.Gender;
-import com._roomthon.irumso.policy.SupportPolicy;
+import com._roomthon.irumso.policy.supportPolicy.SupportPolicy;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
