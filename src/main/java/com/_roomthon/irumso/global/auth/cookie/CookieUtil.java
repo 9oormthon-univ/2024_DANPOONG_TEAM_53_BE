@@ -1,4 +1,4 @@
-package com._roomthon.irumso.config.cookie;
+package com._roomthon.irumso.global.auth.cookie;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

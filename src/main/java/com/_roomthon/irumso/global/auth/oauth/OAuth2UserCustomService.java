@@ -1,4 +1,4 @@
-package com._roomthon.irumso.config.oauth;
+package com._roomthon.irumso.global.auth.oauth;
 
 import com._roomthon.irumso.user.User;
 import com._roomthon.irumso.user.UserRepository;

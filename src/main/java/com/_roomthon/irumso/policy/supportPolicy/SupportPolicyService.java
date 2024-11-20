@@ -66,4 +66,8 @@ public class SupportPolicyService {
             throw new IllegalArgumentException("No data found for serviceId: " + serviceId);
         }
     }
+
+    public List<SupportPolicy> getPolicyRankByView() {
+        return supportPolicyRepository.findTop10ByOrderByViewsDesc();
+    }
 }

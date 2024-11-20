@@ -1,4 +1,4 @@
-package com._roomthon.irumso.config.jwt;
+package com._roomthon.irumso.global.auth.jwt;
 
 import com._roomthon.irumso.refreshToken.RefreshToken;
 import com._roomthon.irumso.refreshToken.RefreshTokenRepository;
