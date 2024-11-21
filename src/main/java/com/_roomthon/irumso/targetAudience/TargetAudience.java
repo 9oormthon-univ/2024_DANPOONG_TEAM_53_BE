@@ -2,6 +2,7 @@ package com._roomthon.irumso.targetAudience;
 
 import com._roomthon.irumso.user.addtionInfo.Gender;
 import com._roomthon.irumso.policy.supportPolicy.SupportPolicy;
+import com._roomthon.irumso.youthPolicy.YouthPolicy;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,4 +55,7 @@ public class TargetAudience {
 
     @OneToOne(mappedBy = "targetAudience") // SupportPolicy에서 관리
     private SupportPolicy supportPolicy;
+
+    @OneToOne(mappedBy = "targetAudience", fetch = FetchType.LAZY)
+    private YouthPolicy youthPolicy;
 }

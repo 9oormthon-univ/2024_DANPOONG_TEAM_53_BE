@@ -14,7 +14,7 @@ public class YouthPolicyController {
 
     @PostMapping("/fetch-and-save")
     public String fetchAndSaveYouthPolicies(@RequestParam(name = "apiKey") String apiKey,
-                                            @RequestParam(name = "display", defaultValue = "10") int display,
+                                            @RequestParam(name = "display", defaultValue = "100") int display,
                                             @RequestParam(name = "pageIndex", defaultValue = "1") int pageIndex,
                                             @RequestParam(name = "bizTycdSel") String serviceType) {
         try {

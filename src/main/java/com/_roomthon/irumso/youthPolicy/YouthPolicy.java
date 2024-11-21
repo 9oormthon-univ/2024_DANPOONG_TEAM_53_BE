@@ -1,5 +1,6 @@
 package com._roomthon.irumso.youthPolicy;
 
+import com._roomthon.irumso.targetAudience.TargetAudience;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import lombok.Getter;
@@ -14,26 +15,20 @@ public class YouthPolicy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "policyId")
-    private String policyId;
+    @Column(name = "serviceId")
+    private String serviceId;
 
-    @Column(name = "organization")
-    private String organization;
+    @Column(name = "serviceName")
+    private String serviceName;
 
-    @Column(name = "policyName")
-    private String policyName;
+    @Column(name = "serviceField", columnDefinition = "TEXT")
+    private String serviceField;
 
-    @Column(name = "policyIntroduction", columnDefinition = "TEXT")
-    private String policyIntroduction;
+    @Column(name = "supportContent", columnDefinition = "TEXT")
+    private String supportContent;
 
-    @Column(name = "applyContent", columnDefinition = "TEXT")
-    private String applyContent;
-
-    @Column(name = "siteUrl")
-    private String siteUrl;
-
-    @Column(name = "applyOrganization")
-    private String applyOrganization;
+    @Column(name = "applicationUrl")
+    private String applicationUrl;
 
     @XmlElement(name = "ageInfo")
     private String ageInfo;
@@ -41,12 +36,11 @@ public class YouthPolicy {
     @XmlElement(name = "employStatus")
     private String employStatus;
 
-    @XmlElement(name = "educationStatus")
-    private String educationStatus;
-
-    @XmlElement(name = "major")
-    private String major;
-
+    @Enumerated(EnumType.STRING)
     private ServiceType serviceType;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "target_audience_id")
+    private TargetAudience targetAudience;
 
 }

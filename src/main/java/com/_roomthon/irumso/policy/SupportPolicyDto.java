@@ -9,7 +9,6 @@ import lombok.Data;
 public class SupportPolicyDto {
     private Long id;
     private String serviceId;
-    private String detailUrl;
     private String serviceName;
     private String serviceField;
     private String criteria;
@@ -31,7 +30,6 @@ public class SupportPolicyDto {
                 .likes(supportPolicy.getLikes())
                 .supportContent(supportPolicy.getSupportContent())
                 .purpose(supportPolicy.getPurpose())
-                .applyTarget(supportPolicy.getApplyTarget())
                 .applicationUrl(supportPolicy.getApplicationUrl())
                 .build();
     }
