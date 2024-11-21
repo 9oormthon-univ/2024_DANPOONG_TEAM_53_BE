@@ -44,5 +44,4 @@ public class RankController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BaseResponse.response(supportPolicies));
     }
-
 }
