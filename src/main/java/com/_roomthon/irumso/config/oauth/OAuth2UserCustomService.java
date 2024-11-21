@@ -19,8 +19,7 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
-        OAuth2User oAuth2User = super.loadUser(userRequest); // ❶ 요청을 바탕으로 유저 정보를 담은 객체 반환
+        OAuth2User oAuth2User = super.loadUser(userRequest);
 
         saveOrUpdateKakaoUser(oAuth2User);
 
@@ -34,12 +33,13 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-        String email = (String) kakaoAccount.get("email");
         String nickname = (String) profile.get("nickname");
+        System.out.println("Extracted nickname: " + nickname); // 로그 추가
 
-        User user = userRepository.findByEmail(email)
-                .orElse(new User(email,nickname));
+        User user = userRepository.findByNickname(nickname)
+                .orElse(new User(nickname)); // User 생성
 
         return userRepository.save(user);
     }
+
 }

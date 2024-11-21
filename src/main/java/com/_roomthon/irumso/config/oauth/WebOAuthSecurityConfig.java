@@ -43,7 +43,6 @@ public class WebOAuthSecurityConfig {
                 .anyRequest().permitAll();
 
         http.oauth2Login()
-                .loginPage("https://localhost:3000/login")
                 .authorizationEndpoint()
                 .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
                 .and()
