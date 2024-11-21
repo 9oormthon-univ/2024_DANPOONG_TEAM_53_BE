@@ -1,4 +1,4 @@
-package com._roomthon.irumso.policy;
+package com._roomthon.irumso.user.addtionInfo;
 
 public enum Job {
     STUDENT("대학생/대학원생"),

@@ -1,9 +1,6 @@
 package com._roomthon.irumso.policy.supportPolicy;
 
-import com._roomthon.irumso.policy.Gender;
-import com._roomthon.irumso.policy.IncomeLevel;
-import com._roomthon.irumso.policy.Job;
-import com._roomthon.irumso.targetAudience.TargetAudience;
+import com._roomthon.irumso.user.addtionInfo.Gender;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

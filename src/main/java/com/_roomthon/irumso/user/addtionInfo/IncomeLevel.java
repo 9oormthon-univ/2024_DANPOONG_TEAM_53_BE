@@ -1,4 +1,4 @@
-package com._roomthon.irumso.policy;
+package com._roomthon.irumso.user.addtionInfo;
 
 public enum IncomeLevel {
     BELOW_50("중위소득 0~50%"),

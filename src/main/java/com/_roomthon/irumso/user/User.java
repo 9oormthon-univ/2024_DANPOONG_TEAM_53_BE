@@ -1,7 +1,7 @@
 package com._roomthon.irumso.user;
 
 import com._roomthon.irumso.refreshToken.RefreshToken;
-import com._roomthon.irumso.targetAudience.TargetAudience;
+import com._roomthon.irumso.user.suveyInfo.SurveyRecommendation;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
