@@ -27,6 +27,12 @@ public class YouthPolicy {
     @Column(name = "supportContent", columnDefinition = "TEXT")
     private String supportContent;
 
+    @Column(name = "views")
+    private Integer views;
+
+    @Column(name = "likes")
+    private Integer likes;
+
     @Column(name = "applicationUrl")
     private String applicationUrl;
 

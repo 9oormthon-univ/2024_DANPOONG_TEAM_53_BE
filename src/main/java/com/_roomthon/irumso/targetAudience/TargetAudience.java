@@ -20,8 +20,11 @@ public class TargetAudience {
     @Column(name = "service_id")
     private String serviceId;
 
-    @Column(name = "gender")
-    private Gender gender;
+    @Column(name = "female")
+    private boolean female;
+
+    @Column(name = "male")
+    private boolean male;
 
     @Column(name = "from_age")
     private int fromAge;

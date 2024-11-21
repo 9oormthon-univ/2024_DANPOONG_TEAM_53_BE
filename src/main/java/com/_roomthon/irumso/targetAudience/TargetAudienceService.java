@@ -35,11 +35,10 @@ public class TargetAudienceService {
 
         TargetAudience targetAudience = new TargetAudience();
 
-        Gender gender = null;
         if ("Y".equals(apiResponse.get("JA0101"))) {
-            gender = Gender.MALE;
+            targetAudience.setMale(true);
         } else if ("Y".equals(apiResponse.get("JA0102"))) {
-            gender = Gender.FEMALE;
+            targetAudience.setFemale(true);
         }
 
         // 소득 구간 매핑
@@ -73,7 +72,6 @@ public class TargetAudienceService {
         }
 
         // 엔티티 생성 및 저장
-        targetAudience.setGender(gender);
         targetAudience.setFromAge(parseInt(apiResponse.get("JA0110")));
         targetAudience.setToAge(parseInt(apiResponse.get("JA0111")));
 

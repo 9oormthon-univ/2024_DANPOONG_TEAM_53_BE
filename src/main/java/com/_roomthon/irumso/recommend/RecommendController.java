@@ -36,7 +36,7 @@ public class RecommendController {
             @ApiResponse(responseCode = "404", description = "조회할 수 없음",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> getRecommendPolicy(@RequestHeader("Authorization") String token) {
         User user = userService.findByAccessToken(token);
 

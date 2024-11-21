@@ -1,6 +1,8 @@
 package com._roomthon.irumso.policy.supportPolicy;
 
 import com._roomthon.irumso.user.addtionInfo.Gender;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +17,9 @@ public interface SupportPolicyRepository extends JpaRepository<SupportPolicy, Lo
     SELECT sp
     FROM SupportPolicy sp
     JOIN sp.targetAudience ta
-    WHERE (:gender IS NULL OR ta.gender = :gender)
+    WHERE (:gender IS NULL OR (
+            (:gender = 'FEMALE' AND ta.female = true)
+        OR  (:gender = 'MALE' AND ta.male = true)))
       AND ta.fromAge <= :age AND ta.toAge >= :age
       AND (:job IS NULL OR (
            (:job = 'STUDENT' AND ta.student = true) 
@@ -28,10 +32,12 @@ public interface SupportPolicyRepository extends JpaRepository<SupportPolicy, Lo
         OR (:incomeLevel = 'BETWEEN_101_AND_200' AND ta.between_101_and_200 = true)
         OR (:incomeLevel = 'ABOVE_200' AND ta.above_200 = true)))
 """)
-    List<SupportPolicy> findMatchingAudiences(
-            @Param("gender") Gender gender,
+    Page<SupportPolicy> findMatchingAudiencesWithLimit(
+            @Param("gender") String gender,
             @Param("age") int age,
             @Param("job") String job,
-            @Param("incomeLevel") String incomeLevel
+            @Param("incomeLevel") String incomeLevel,
+            Pageable pageable
     );
+
 }

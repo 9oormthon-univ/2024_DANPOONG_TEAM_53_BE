@@ -25,8 +25,8 @@ public class SupportPolicy {
     @Column(name = "service_field")
     private String serviceField;
 
-    @Column(name = "criteria", columnDefinition = "TEXT")
-    private String criteria;
+    @Column(name = "applyTarget", columnDefinition = "TEXT")
+    private String applyTarget;
 
     @Column(name = "views")
     private Integer views;
@@ -42,9 +42,6 @@ public class SupportPolicy {
 
     @Column(name = "application_url")
     private String applicationUrl;
-
-    @Column(name = "is_youth_policy")
-    private boolean isYouthPolicy;
 
     @Column(name = "service_type")
     @Enumerated(EnumType.STRING)
