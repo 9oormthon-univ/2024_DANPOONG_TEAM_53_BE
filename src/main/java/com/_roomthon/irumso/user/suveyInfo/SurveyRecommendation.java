@@ -1,8 +1,9 @@
-package com._roomthon.irumso.user;
+package com._roomthon.irumso.user.suveyInfo;
 
-import com._roomthon.irumso.policy.Gender;
-import com._roomthon.irumso.policy.IncomeLevel;
-import com._roomthon.irumso.policy.Job;
+import com._roomthon.irumso.user.User;
+import com._roomthon.irumso.user.addtionInfo.Gender;
+import com._roomthon.irumso.user.addtionInfo.IncomeLevel;
+import com._roomthon.irumso.user.addtionInfo.Job;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

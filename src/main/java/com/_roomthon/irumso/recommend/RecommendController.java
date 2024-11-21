@@ -1,9 +1,9 @@
 package com._roomthon.irumso.recommend;
 
 import com._roomthon.irumso.global.base.template.BaseResponse;
-import com._roomthon.irumso.policy.Gender;
-import com._roomthon.irumso.policy.IncomeLevel;
-import com._roomthon.irumso.policy.Job;
+import com._roomthon.irumso.user.addtionInfo.Gender;
+import com._roomthon.irumso.user.addtionInfo.IncomeLevel;
+import com._roomthon.irumso.user.addtionInfo.Job;
 import com._roomthon.irumso.policy.SupportPolicyDto;
 import com._roomthon.irumso.user.User;
 import com._roomthon.irumso.user.UserService;

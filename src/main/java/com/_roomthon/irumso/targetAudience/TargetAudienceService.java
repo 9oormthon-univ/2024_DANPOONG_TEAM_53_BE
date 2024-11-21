@@ -1,6 +1,6 @@
 package com._roomthon.irumso.targetAudience;
 
-import com._roomthon.irumso.policy.Gender;
+import com._roomthon.irumso.user.addtionInfo.Gender;
 import com._roomthon.irumso.policy.supportPolicy.SupportPolicyService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
