@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.6'
 }
 
-group = 'com.groomthon'
+group = 'com.9roomthon'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -13,54 +13,27 @@ java {
 	}
 }
 
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-<<<<<<< HEAD
-	// Spring Boot
-=======
->>>>>>> main
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'io.jsonwebtoken:jjwt:0.9.0'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
 
-<<<<<<< HEAD
-	// Security and OAuth
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.7.10'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-
-	// Validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	// MySQL
-	runtimeOnly 'com.mysql:mysql-connector-j'
-
-	// Swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-	//thymeleaf (페이지 확인용)
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-	// Spring WebFlux 의존성 추가 (WebClient 사용을 위해)
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-	// Hibernate Validator 추가 (jakarta validation 사용)
-	implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
-	implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
-
-	// Test dependencies
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-=======
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -68,7 +41,6 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
->>>>>>> main
 }
 
 tasks.named('test') {
