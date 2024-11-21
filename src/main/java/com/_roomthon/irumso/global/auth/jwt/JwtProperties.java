@@ -1,4 +1,4 @@
-package com._roomthon.irumso.config.jwt;
+package com._roomthon.irumso.global.auth.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

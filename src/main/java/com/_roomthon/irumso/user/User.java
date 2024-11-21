@@ -1,6 +1,7 @@
 package com._roomthon.irumso.user;
 
 import com._roomthon.irumso.refreshToken.RefreshToken;
+import com._roomthon.irumso.targetAudience.TargetAudience;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,10 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.PERSIST)//User를 저장할 때 관련된 RefreshToken도 함께 저장
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "survey_recommendation_id")
+    private SurveyRecommendation surveyRecommendation;
 
     @Builder
     public User(String email) {

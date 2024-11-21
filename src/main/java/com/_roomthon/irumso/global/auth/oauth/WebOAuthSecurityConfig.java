@@ -1,6 +1,6 @@
-package com._roomthon.irumso.config.oauth;
+package com._roomthon.irumso.global.auth.oauth;
 
-import com._roomthon.irumso.config.jwt.TokenProvider;
+import com._roomthon.irumso.global.auth.jwt.TokenProvider;
 import com._roomthon.irumso.refreshToken.RefreshTokenRepository;
 import com._roomthon.irumso.user.UserRepository;
 import com._roomthon.irumso.user.UserService;
@@ -38,7 +38,7 @@ public class WebOAuthSecurityConfig {
         http.cors();
 
         http.authorizeRequests()
-                .requestMatchers("/api/target-audience/**").permitAll()
+                .requestMatchers("/api/target-audience/**", "/api/rank/**","/api/youth-policy/fetch-and-save").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 

@@ -1,7 +1,7 @@
-package com._roomthon.irumso.config.oauth;
+package com._roomthon.irumso.global.auth.oauth;
 
-import com._roomthon.irumso.config.cookie.CookieUtil;
-import com._roomthon.irumso.config.jwt.TokenProvider;
+import com._roomthon.irumso.global.auth.cookie.CookieUtil;
+import com._roomthon.irumso.global.auth.jwt.TokenProvider;
 import com._roomthon.irumso.refreshToken.RefreshToken;
 import com._roomthon.irumso.refreshToken.RefreshTokenRepository;
 import com._roomthon.irumso.user.User;

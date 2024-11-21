@@ -1,6 +1,7 @@
-package com._roomthon.irumso.targetAudience;
+package com._roomthon.irumso.external;
 
 import com._roomthon.irumso.policy.detailPolicy.DetailPolicyService;
+import com._roomthon.irumso.targetAudience.TargetAudienceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,15 +12,15 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/target-audience")
-public class TargetAudienceController {
+public class PublicDataController {
 
     private final TargetAudienceService targetAudienceService;
     private final DetailPolicyService detailPolicyService;
     private final WebClient webClient;
 
-    public TargetAudienceController(TargetAudienceService targetAudienceService,
-                                    DetailPolicyService detailPolicyService,
-                                    WebClient.Builder webClientBuilder) {
+    public PublicDataController(TargetAudienceService targetAudienceService,
+                                DetailPolicyService detailPolicyService,
+                                WebClient.Builder webClientBuilder) {
         this.targetAudienceService = targetAudienceService;
         this.detailPolicyService = detailPolicyService;
         this.webClient = webClientBuilder.baseUrl("https://api.odcloud.kr/api").build();
