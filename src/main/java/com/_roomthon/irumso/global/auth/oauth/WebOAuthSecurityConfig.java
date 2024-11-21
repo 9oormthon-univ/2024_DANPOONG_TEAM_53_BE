@@ -38,7 +38,7 @@ public class WebOAuthSecurityConfig {
         http.cors();
 
         http.authorizeRequests()
-                .requestMatchers("/api/target-audience/**", "/api/rank/**").permitAll()
+                .requestMatchers("/api/target-audience/**", "/api/rank/**","/api/youth-policy/fetch-and-save").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 
