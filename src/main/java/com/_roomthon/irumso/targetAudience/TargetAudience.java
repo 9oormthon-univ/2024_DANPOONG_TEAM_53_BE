@@ -2,6 +2,7 @@ package com._roomthon.irumso.targetAudience;
 
 import com._roomthon.irumso.user.addtionInfo.Gender;
 import com._roomthon.irumso.policy.supportPolicy.SupportPolicy;
+import com._roomthon.irumso.youthPolicy.YouthPolicy;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,11 @@ public class TargetAudience {
     @Column(name = "service_id")
     private String serviceId;
 
-    @Column(name = "gender")
-    private Gender gender;
+    @Column(name = "female")
+    private boolean female;
+
+    @Column(name = "male")
+    private boolean male;
 
     @Column(name = "from_age")
     private int fromAge;
@@ -54,4 +58,7 @@ public class TargetAudience {
 
     @OneToOne(mappedBy = "targetAudience") // SupportPolicy에서 관리
     private SupportPolicy supportPolicy;
+
+    @OneToOne(mappedBy = "targetAudience", fetch = FetchType.LAZY)
+    private YouthPolicy youthPolicy;
 }

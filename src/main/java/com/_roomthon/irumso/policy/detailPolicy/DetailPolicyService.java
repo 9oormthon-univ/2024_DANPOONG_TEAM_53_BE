@@ -49,7 +49,6 @@ public class DetailPolicyService {
 
                 System.out.println(fetchedServiceId);
                 SupportPolicy supportPolicy = supportPolicyOpt.get();
-                supportPolicy.setDetailUrl((String) data.get("상세조회URL"));
                 supportPolicy.setServiceField((String) data.get("서비스명"));
                 supportPolicy.setViews(parseInt(data.get("조회수")));
 

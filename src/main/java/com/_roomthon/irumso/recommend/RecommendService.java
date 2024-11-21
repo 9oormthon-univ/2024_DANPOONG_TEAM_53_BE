@@ -11,19 +11,24 @@ import com._roomthon.irumso.user.suveyInfo.SurveyRecommendation;
 import com._roomthon.irumso.user.suveyInfo.SurveyRecommendationRepository;
 import com._roomthon.irumso.user.User;
 import com._roomthon.irumso.user.UserService;
+import com._roomthon.irumso.youthPolicy.YouthPolicy;
+import com._roomthon.irumso.youthPolicy.YouthPolicyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
 public class RecommendService {
     private final UserService userService;
-    private final TargetAudienceRepository targetAudienceRepository;
     private final SurveyRecommendationRepository surveyRecommendationRepository;
     private final SupportPolicyRepository supportPolicyRepository;
+    private final YouthPolicyRepository youthPolicyRepository;
 
     public void inputRecommendSurvey(String email, Gender gender, int age, Job job, IncomeLevel incomeLevel) {
         User user = userService.findByEmail(email);
@@ -53,18 +58,33 @@ public class RecommendService {
 
         SurveyRecommendation survey = user.getSurveyRecommendation();
 
-        // Repository에서 필터링된 대상 조회
-        List<SupportPolicy> matchingAudiences = supportPolicyRepository.findMatchingAudiences(
-                survey.getGender(),
+        Pageable pageable = PageRequest.of(0, 100);
+        List<YouthPolicy> matchingAudiencesWithYouthPolicy = youthPolicyRepository.findMatchingAudiences(
+                String.valueOf(survey.getGender()),
                 survey.getAge(),
                 String.valueOf(survey.getJob()),
-                String.valueOf(survey.getIncomeLevel()) // Enum의 이름 사용
-        );
+                String.valueOf(survey.getIncomeLevel()), // Enum의 이름 사용
+                pageable
+        ).getContent();
 
-        // 추천 서비스 DTO로 변환
-        return matchingAudiences.stream()
-                .map(SupportPolicyDto::fromEntity)
+        // Repository에서 필터링된 대상 조회
+        List<SupportPolicy> matchingAudiencesWithSupportPolicy = supportPolicyRepository.findMatchingAudiencesWithLimit(
+                String.valueOf(survey.getGender()),
+                survey.getAge(),
+                String.valueOf(survey.getJob()),
+                String.valueOf(survey.getIncomeLevel()),
+                pageable// Enum의 이름 사용
+        ).getContent();
+
+        // YouthPolicy와 SupportPolicy를 DTO로 변환 및 병합
+        List<SupportPolicyDto> combinedList = Stream.concat(
+                        matchingAudiencesWithYouthPolicy.stream().map(SupportPolicyDto::fromYouthPolicy),
+                        matchingAudiencesWithSupportPolicy.stream().map(SupportPolicyDto::fromEntity)
+                )
+                .distinct() // 중복 제거 (equals/hashCode 기준)
                 .collect(Collectors.toList());
+
+        return combinedList;
     }
 
 }

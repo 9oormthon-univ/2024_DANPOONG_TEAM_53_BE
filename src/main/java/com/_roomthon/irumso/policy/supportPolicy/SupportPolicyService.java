@@ -53,7 +53,6 @@ public class SupportPolicyService {
                 SupportPolicy supportPolicy = new SupportPolicy();
                 supportPolicy.setServiceId(serviceId);
                 supportPolicy.setServiceName((String) data.get("서비스명"));
-                supportPolicy.setCriteria((String) data.get("선정기준"));
                 supportPolicy.setApplyTarget((String) data.get("지원대상"));
                 supportPolicy.setSupportContent((String) data.get("지원내용"));
                 supportPolicy.setPurpose((String) data.get("서비스목적"));
