@@ -97,11 +97,14 @@ public class BoardPostController {
             @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
+
     @PostMapping("/{postId}/like")
     public ResponseEntity<Void> addLike(@PathVariable Long postId) {
-        boardPostService.addLikeToPost(postId);
+        String nickname = userService.getAuthenticatedUserNickname();  // 닉네임 가져오기
+        boardPostService.addLikeToPost(postId, nickname);  // 닉네임을 함께 전달
         return ResponseEntity.ok().build();
     }
+
 
     @Operation(summary = "좋아요 취소", description = "게시글에서 좋아요를 취소합니다.")
     @ApiResponses(value = {
@@ -109,9 +112,50 @@ public class BoardPostController {
             @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
+
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<Void> removeLike(@PathVariable Long postId) {
-        boardPostService.removeLikeFromPost(postId);
+        String nickname = userService.getAuthenticatedUserNickname();  // 닉네임 가져오기
+        boardPostService.removeLikeFromPost(postId, nickname);  // 닉네임을 함께 전달
         return ResponseEntity.ok().build();
+    }
+
+    // 조회수 증가
+    @Operation(summary = "조회수 증가", description = "게시글 조회수를 증가시킵니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회수 증가 성공"),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+
+    @PostMapping("/{postId}/view")
+    public ResponseEntity<Void> increaseViewCount(@PathVariable Long postId) {
+        String nickname = userService.getAuthenticatedUserNickname();  // 닉네임 가져오기
+        boardPostService.increaseViewCount(postId, nickname);  // 닉네임을 함께 전달
+        return ResponseEntity.ok().build();
+    }
+
+    // 조회수가 많은 상위 5개 게시글
+    @Operation(summary = "조회수가 많은 상위 5개 게시글", description = "조회수가 많은 게시글을 상위 5개 가져옵니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "상위 5개 게시글 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/top-views")
+    public ResponseEntity<List<BoardPost>> getTopPostsByViews() {
+        List<BoardPost> topPosts = boardPostService.getTop5PostsByViews();
+        return ResponseEntity.ok(topPosts);
+    }
+
+    // 좋아요가 많은 상위 5개 게시글
+    @Operation(summary = "좋아요가 많은 상위 5개 게시글", description = "좋아요가 많은 게시글을 상위 5개 가져옵니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "상위 5개 게시글 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/top-likes")
+    public ResponseEntity<List<BoardPost>> getTopPostsByLikes() {
+        List<BoardPost> topPosts = boardPostService.getTop5PostsByLikes();
+        return ResponseEntity.ok(topPosts);
     }
 }

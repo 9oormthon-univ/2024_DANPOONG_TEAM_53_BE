@@ -28,7 +28,11 @@ public class BoardPost {
     @Column(name = "image_url")  // imageUrl 컬럼을 image_url로 변경
     private String imageUrl;  // 이미지 URL
 
+    @Builder.Default
     private Integer likes = 0;
+
+    @Builder.Default
+    private Integer viewCount = 0;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
