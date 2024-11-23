@@ -22,7 +22,7 @@ public class BoardCategoryController {
 
     @Operation(
             summary = "모든 카테고리 조회",
-            description = "데이터베이스에 저장된 모든 게시판 카테고리를 조회합니다."
+            description = "categoryId : [1 = 주거, 2 = 의료, 3 = 학업, 4 = 기타]"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 조회 성공"),
