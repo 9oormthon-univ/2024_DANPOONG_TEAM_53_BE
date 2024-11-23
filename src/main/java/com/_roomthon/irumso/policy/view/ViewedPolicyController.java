@@ -16,10 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/view")
-@Tag(name = "정책 조회 표시", description = "정책 조회 관리 API")
+@Tag(name = "정책 조회", description = "정책 조회 관리 API")
 public class ViewedPolicyController {
     private final UserService userService;
     private final ViewedPolicyService viewedPolicyService;
@@ -45,6 +47,34 @@ public class ViewedPolicyController {
         ViewedPolicyDto dto;
         try {
             dto = viewedPolicyService.viewedPolicy(user.getNickname(), policyId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.response(dto));
+    }
+
+    @Operation(summary = "최근에 조회한 정책", description = "최근에 조회한 정책을 표시합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "최근에 조회한 정책 조회 성공",
+                    content = @Content(schema = @Schema(implementation = SupportPolicyDto.class))),
+            @ApiResponse(responseCode = "404", description = "최근에 본 정책 조회할 수 없음",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @GetMapping
+    public ResponseEntity<?> myViewed(@RequestHeader("Authorization") String token) {
+
+        User user = userService.findByAccessToken(token);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.response("로그인 후 이용해주세요."));
+        }
+
+        List<SupportPolicyDto> dto;
+        try {
+            dto = viewedPolicyService.getMyViewed(user.getNickname());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
