@@ -39,49 +39,38 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String nickname, email;
 
-        nickname = getKakaoNickname(oAuth2User);
-        email = getKakaoEmail(oAuth2User);
+        String nickname = getKakaoNickname(oAuth2User);
 
-        User user = userService.findByEmail(email);
+        User user = saveOrUpdateUser(nickname);
 
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         saveRefreshToken(user, refreshToken);
         addRefreshTokenToCookie(request, response, refreshToken);
 
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
+        System.out.println("Generated Access Token: " + accessToken);
 
-        String targetUrl = "";
-
-        if(user.getNickname() == null){
-            targetUrl = getTargetUrl(accessToken,false);
-        }else{
-            targetUrl = getTargetUrl(accessToken,true);
-        }
+        String targetUrl = user.getNickname() == null
+                ? getTargetUrl(accessToken, false)
+                : getTargetUrl(accessToken, true);
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
-
-    }
-
-    private String getKakaoEmail(OAuth2User oAuth2User) {
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-
-        String email = (String) kakaoAccount.get("email");
-        return email;
     }
 
     private String getKakaoNickname(OAuth2User oAuth2User) {
         Map<String, Object> attributes = oAuth2User.getAttributes();
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+        return (String) profile.get("nickname");
+    }
 
-        String nickname = (String) profile.get("nickname");
-        return nickname;
+    @Transactional
+    private User saveOrUpdateUser(String nickname) {
+        return userRepository.findByNickname(nickname)
+                .orElseGet(() -> userRepository.save(new User(nickname)));
     }
 
     @Transactional
@@ -93,12 +82,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         refreshTokenRepository.save(refreshToken);
         user.setRefreshToken(refreshToken);
         userRepository.save(user);
-
     }
 
     private void addRefreshTokenToCookie(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
         int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
-
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
         CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
     }
@@ -109,17 +96,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private String getTargetUrl(String token, boolean nicknameExist) {
-        if(nicknameExist){
-            return UriComponentsBuilder.fromUriString(HOME_REDIRECT_PATH)
-                    .queryParam("token", token)
-                    .build()
-                    .toUriString();
-        }else{
-            return UriComponentsBuilder.fromUriString(SIGNUP_REDIRECT_PATH)
-                    .queryParam("token", token)
-                    .build()
-                    .toUriString();
-        }
+        return nicknameExist
+                ? UriComponentsBuilder.fromUriString(HOME_REDIRECT_PATH)
+                .queryParam("token", token)
+                .build()
+                .toUriString()
+                : UriComponentsBuilder.fromUriString(SIGNUP_REDIRECT_PATH)
+                .queryParam("token", token)
+                .build()
+                .toUriString();
     }
 }
-

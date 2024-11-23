@@ -3,15 +3,12 @@ package com._roomthon.irumso.user;
 import com._roomthon.irumso.global.auth.jwt.TokenProvider;
 import com._roomthon.irumso.refreshToken.RefreshToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-@Transactional
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -45,13 +42,15 @@ public class UserService {
         return (User) authentication.getPrincipal();
     }
 
-    public User save(User user) {
-        return userRepository.save(user);
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public User findByNickname(String nickName) {
-        return userRepository.findByNickname(nickName)
-                .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
+    // 인증된 사용자 닉네임 가져오기
+    public String getAuthenticatedUserNickname() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();  // 현재 인증된 사용자의 닉네임
     }
 
     public User findByEmail(String email) {

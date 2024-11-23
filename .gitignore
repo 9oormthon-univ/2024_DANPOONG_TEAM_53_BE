@@ -38,3 +38,4 @@ out/
 
 # Application properties (for sensitive information)
 application.properties
+application-private.properties

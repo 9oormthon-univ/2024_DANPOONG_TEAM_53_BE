@@ -34,7 +34,7 @@ public class TokenProvider {
         return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
     }
 
-    //JWT token 생성 메서드
+    // JWT token 생성 메서드
     private String makeToken(Date expiry, User user) {
         Date now = new Date();
 
@@ -43,47 +43,69 @@ public class TokenProvider {
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .setSubject(user.getEmail())
+                .setSubject(user.getNickname()) // 닉네임을 subject로 사용
                 .claim("id", user.getId())
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
                 .compact();
     }
 
-    //JWT token 유효성 검증 메서드
+    // JWT token 유효성 검증 메서드
     public boolean validToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtProperties.getSecretKey())
-                    .parseClaimsJws(token);
+            // 로그 추가: 토큰 검증 시작
+            System.out.println("Validating token: " + token);
 
-            return true;
+            // JWT 토큰 검증
+            Jwts.parser()
+                    .setSigningKey(jwtProperties.getSecretKey())  // 비밀 키로 서명 검증
+                    .parseClaimsJws(token);  // Claims 추출
+
+            // 검증 성공 로그
+            System.out.println("Token is valid!");
+
+            return true;  // 토큰이 유효하면 true 반환
         } catch (Exception e) {
-            return false;
+            // 예외 발생 시 로그
+            System.out.println("Token validation failed: " + e.getMessage());
+            return false;  // 토큰이 유효하지 않으면 false 반환
         }
     }
 
-    //Token 기반으로 인증정보를 가져오는 메서드
+    // Token 기반으로 인증정보를 가져오는 메서드
     public Authentication getAuthentication(String token) {
-        Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        System.out.println("Getting authentication for token: " + token);
 
+        Claims claims = getClaims(token);  // 토큰에서 Claims 추출
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));  // 권한 설정
+
+        // 로그 추가: Claims에서 사용자 정보 추출
+        System.out.println("Extracted claims: " + claims);
+
+        // Claims에서 사용자 정보로 User 객체 생성
         User user = getUserFromClaims(claims);
 
+        // 인증 객체 생성
         return new UsernamePasswordAuthenticationToken(user, token, authorities);
     }
 
+
     private User getUserFromClaims(Claims claims) {
-        // Claims에서 사용자 정보를 추출하고 User 객체를 생성하거나 조회하는 로직 구현
-        String email = claims.getSubject();
-        // 예시: 사용자 정보를 데이터베이스에서 조회
-        return new User(email);
+        // Claims에서 닉네임을 추출하고 User 객체 생성
+        String nickname = claims.getSubject();
+        return new User(nickname); // 닉네임 기반 User 생성
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtProperties.getSecretKey())
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            System.out.println("Parsing token: " + token);
+            return Jwts.parser()
+                    .setSigningKey(jwtProperties.getSecretKey())  // 비밀 키로 서명 검증
+                    .parseClaimsJws(token)  // 토큰 파싱하여 Claims 반환
+                    .getBody();
+        } catch (Exception e) {
+            System.out.println("Error parsing token: " + e.getMessage());
+            throw new RuntimeException("Token parsing failed", e);
+        }
     }
 
 
@@ -107,5 +129,4 @@ public class TokenProvider {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token");
         }
     }
-
 }
