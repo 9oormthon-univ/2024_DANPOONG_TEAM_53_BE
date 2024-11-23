@@ -1,7 +1,7 @@
 package com._roomthon.irumso.policy.supportPolicy;
 
-import com._roomthon.irumso.targetAudience.TargetAudience;
-import com._roomthon.irumso.targetAudience.TargetAudienceRepository;
+import com._roomthon.irumso.policy.targetAudience.TargetAudience;
+import com._roomthon.irumso.policy.targetAudience.TargetAudienceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -67,7 +67,10 @@ public class SupportPolicyService {
     }
 
     public List<SupportPolicy> getPolicyRankByView() {
-        return supportPolicyRepository.findTop10ByOrderByViewsDesc();
+        List<SupportPolicy> policies = supportPolicyRepository.findTop10ByOrderByViewsDesc();
+        policies.sort((sp1, sp2) -> Integer.compare(sp2.getViewedPolicies().size(), sp1.getViewedPolicies().size()));
+
+        return policies;
     }
 
     public SupportPolicy getPolicyById(Long policyId){
