@@ -1,9 +1,13 @@
 package com._roomthon.irumso.board;
 
 import com._roomthon.irumso.user.User;
+
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "board_posts")
@@ -29,8 +33,10 @@ public class BoardPost {
     @JoinColumn(name = "created_by")  // 외래 키 설정
     private User createdBy;  // 작성자
 
-    @Column(name = "image_url")  // imageUrl 컬럼을 image_url로 변경
-    private String imageUrl;  // 이미지 URL
+    @ElementCollection
+    @CollectionTable(name = "board_post_images", joinColumns = @JoinColumn(name = "board_post_id"))
+    @Column(name = "image_url")
+    private List<String> imageUrls = new ArrayList<>();
 
     @Builder.Default
     private Integer likes = 0;

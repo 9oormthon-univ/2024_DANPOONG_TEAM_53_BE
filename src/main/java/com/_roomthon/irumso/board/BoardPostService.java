@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +30,8 @@ public class BoardPostService {
     private final BoardCommentRepository boardCommentRepository;
     private final BoardCategoryRepository boardCategoryRepository;
 
-    // 게시글 작성
-    public BoardPost createBoardPost(String nickname, String title, String content, Long categoryId, MultipartFile image) throws IOException {
+    @Transactional
+    public BoardPost createBoardPost(String nickname, String title, String content, Long categoryId, MultipartFile[] images) throws IOException {
         // 작성자 정보 조회
         User user = userService.findByNickname(nickname);
 
@@ -38,27 +39,50 @@ public class BoardPostService {
         BoardCategory category = boardCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
 
-        // 이미지 업로드
-        String imageUrl = (image != null && !image.isEmpty()) ? uploadImage(image) : null;
-
-        // 게시글 생성
+        // 게시글 객체 생성 (이미지는 빈 상태로 초기화)
         BoardPost boardPost = BoardPost.builder()
                 .title(title)
                 .content(content)
                 .createdBy(user)
                 .authorNickname(user.getNickname())
-                .category(category)  // 카테고리 설정
+                .category(category)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .imageUrl(imageUrl)
+                .imageUrls(new ArrayList<>()) // 초기화된 빈 리스트
                 .build();
 
-        return boardPostRepository.save(boardPost);
+        // 게시글 저장 (post_id 생성)
+        BoardPost savedPost = boardPostRepository.save(boardPost);
+
+        // 이미지 업로드 처리 후 추가
+        if (images != null && images.length > 0) {
+            if (images.length > 10) {
+                throw new IllegalArgumentException("이미지는 최대 10장까지 업로드 가능합니다.");
+            }
+            for (MultipartFile image : images) {
+                if (!image.isEmpty()) {
+                    String imageUrl = uploadImage(image);
+                    if (imageUrl != null) {
+                        savedPost.getImageUrls().add(imageUrl); // URL 추가
+                    } else {
+                        System.out.println("이미지 업로드 실패: " + image.getOriginalFilename());
+                    }
+                }
+            }
+        }
+
+        System.out.println("최종 저장된 이미지 URLs: " + savedPost.getImageUrls());
+        // 변경된 엔티티를 다시 저장
+        return boardPostRepository.save(savedPost);
     }
 
 
-    // 게시글 수정
-    public BoardPost updateBoardPost(Long postId, String title, String content, Long categoryId, MultipartFile image) throws IOException {
+    public BoardPost getBoardPostById(Long postId) {
+        return boardPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+    }
+
+    public BoardPost updateBoardPost(Long postId, String title, String content, Long categoryId, MultipartFile[] images) throws IOException {
         // 게시글 조회
         BoardPost existingPost = boardPostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
@@ -67,19 +91,32 @@ public class BoardPostService {
         BoardCategory category = boardCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
 
-        // 게시글 수정
+        // 게시글 정보 수정
         existingPost.setTitle(title);
         existingPost.setContent(content);
         existingPost.setCategory(category);  // 카테고리 수정
 
-        // 이미지 수정
-        String imageUrl = (image != null && !image.isEmpty()) ? uploadImage(image) : existingPost.getImageUrl();
-        existingPost.setImageUrl(imageUrl);
+        // 이미지 업데이트
+        if (images != null && images.length > 0) {
+            if (images.length > 10) {
+                throw new IllegalArgumentException("이미지는 최대 10장까지 업로드 가능합니다.");
+            }
+
+            // 기존 이미지 URL 제거 후 새로 추가
+            existingPost.getImageUrls().clear(); // 기존 이미지 목록 삭제
+            for (MultipartFile image : images) {
+                if (!image.isEmpty()) {
+                    String imageUrl = uploadImage(image);
+                    existingPost.getImageUrls().add(imageUrl); // 새 이미지 추가
+                }
+            }
+        }
 
         existingPost.setUpdatedAt(LocalDateTime.now());
 
         return boardPostRepository.save(existingPost);
     }
+
 
 
     @Transactional
@@ -163,16 +200,18 @@ public class BoardPostService {
 
     public String uploadImage(MultipartFile image) throws IOException {
         if (image == null || image.isEmpty()) {
-            return null;
+            return null; // 비어 있는 경우 null 반환
         }
 
-        String fileName = image.getOriginalFilename();
-        Path path = Paths.get(uploadDir + fileName);  // 주입받은 경로 사용
-
+        // 파일 이름 고유화 (한글 깨짐 방지)
+        String fileName = System.currentTimeMillis() + "_" + java.net.URLEncoder.encode(image.getOriginalFilename(), "UTF-8");
+        Path path = Paths.get(uploadDir + fileName);
         Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         return "http://localhost:8080/uploads/" + fileName;
     }
+
+
 
 
 

@@ -30,12 +30,11 @@ public class BoardPostController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> createPost(@RequestParam String title,
                                                           @RequestParam String content,
-                                                          @RequestParam Long categoryId,  // 카테고리 ID 추가
-                                                          @RequestParam(required = false) MultipartFile image) throws IOException {
+                                                          @RequestParam Long categoryId,
+                                                          @RequestParam(required = false) MultipartFile[] images) throws IOException {
         String nickname = userService.getAuthenticatedUserNickname();
-        BoardPost boardPost = boardPostService.createBoardPost(nickname, title, content, categoryId, image); // categoryId 전달
+        BoardPost boardPost = boardPostService.createBoardPost(nickname, title, content, categoryId, images); // 배열로 전달
 
-        // 응답에 category 정보 추가
         Map<String, Object> response = Map.of(
                 "author", boardPost.getCreatedBy().getNickname(),
                 "createdAt", boardPost.getCreatedAt(),
@@ -45,7 +44,6 @@ public class BoardPostController {
 
         return ResponseEntity.ok(response);
     }
-
 
     @Operation(summary = "게시글 수정", description = "게시글을 수정합니다.")
     @ApiResponses(value = {
@@ -58,8 +56,8 @@ public class BoardPostController {
                                                           @RequestParam String title,
                                                           @RequestParam String content,
                                                           @RequestParam Long categoryId,  // 카테고리 ID 추가
-                                                          @RequestParam(required = false) MultipartFile image) throws IOException {
-        BoardPost updatedPost = boardPostService.updateBoardPost(postId, title, content, categoryId, image); // categoryId 전달
+                                                          @RequestParam(required = false) MultipartFile[] images) throws IOException {
+        BoardPost updatedPost = boardPostService.updateBoardPost(postId, title, content, categoryId, images); // 배열로 전달
 
         // 응답에 category 정보 추가
         Map<String, Object> response = Map.of(
@@ -67,7 +65,26 @@ public class BoardPostController {
                 "content", updatedPost.getContent(),
                 "createdAt", updatedPost.getCreatedAt(),
                 "updatedAt", updatedPost.getUpdatedAt(),
-                "category", updatedPost.getCategory().getName()  // 카테고리 이름 추가
+                "category", updatedPost.getCategory().getName(),  // 카테고리 이름 추가
+                "images", updatedPost.getImageUrls()  // 다중 이미지 추가
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<Map<String, Object>> getPostDetails(@PathVariable Long postId) {
+        BoardPost post = boardPostService.getBoardPostById(postId); // Service에서 게시글 가져오기
+
+        Map<String, Object> response = Map.of(
+                "title", post.getTitle(),
+                "content", post.getContent(),
+                "images", post.getImageUrls(), // 이미지 URL 목록 추가
+                "createdAt", post.getCreatedAt(),
+                "updatedAt", post.getUpdatedAt(),
+                "author", post.getAuthorNickname(),
+                "category", post.getCategory().getName()
         );
 
         return ResponseEntity.ok(response);
