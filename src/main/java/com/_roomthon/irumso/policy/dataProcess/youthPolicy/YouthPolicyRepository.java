@@ -1,29 +1,21 @@
-package com._roomthon.irumso.policy.supportPolicy;
+package com._roomthon.irumso.policy.dataProcess.youthPolicy;
 
-import com._roomthon.irumso.user.addtionInfo.Gender;
+import com._roomthon.irumso.policy.supportPolicy.SupportPolicy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface SupportPolicyRepository extends JpaRepository<SupportPolicy, Long> {
+public interface YouthPolicyRepository extends JpaRepository<YouthPolicy, Long> {
     Optional<SupportPolicy> findByServiceId(String serviceId);
 
-    @Query("SELECT sp " +
-            "FROM SupportPolicy sp " +
-            "LEFT JOIN sp.viewedPolicies vp " +
-            "GROUP BY sp.id " +
-            "ORDER BY COUNT(vp) DESC")
-    List<SupportPolicy> findTop10ByOrderByViewsDesc(Pageable pageable);
-
     @Query("""
-    SELECT sp
-    FROM SupportPolicy sp
-    JOIN sp.targetAudience ta
+    SELECT yp
+    FROM YouthPolicy yp
+    JOIN yp.targetAudience ta
     WHERE (:gender IS NULL OR (
             (:gender = 'FEMALE' AND ta.female = true)
         OR  (:gender = 'MALE' AND ta.male = true)))
@@ -39,12 +31,11 @@ public interface SupportPolicyRepository extends JpaRepository<SupportPolicy, Lo
         OR (:incomeLevel = 'BETWEEN_101_AND_200' AND ta.between_101_and_200 = true)
         OR (:incomeLevel = 'ABOVE_200' AND ta.above_200 = true)))
 """)
-    Page<SupportPolicy> findMatchingAudiencesWithLimit(
+    Page<YouthPolicy> findMatchingAudiences(
             @Param("gender") String gender,
             @Param("age") int age,
             @Param("job") String job,
             @Param("incomeLevel") String incomeLevel,
             Pageable pageable
     );
-
 }

@@ -1,8 +1,9 @@
 package com._roomthon.irumso.policy.supportPolicy;
 
-import com._roomthon.irumso.targetAudience.TargetAudience;
-import com._roomthon.irumso.youthPolicy.ServiceType;
-import com._roomthon.irumso.like.LikedPolicy;
+import com._roomthon.irumso.policy.targetAudience.TargetAudience;
+import com._roomthon.irumso.policy.dataProcess.youthPolicy.ServiceType;
+import com._roomthon.irumso.policy.like.LikedPolicy;
+import com._roomthon.irumso.policy.view.ViewedPolicy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,14 +28,11 @@ public class SupportPolicy {
     @Column(name = "service_name")
     private String serviceName;
 
-    @Column(name = "service_field")
+    @Column(name = "service_field", columnDefinition = "TEXT")
     private String serviceField;
 
     @Column(name = "applyTarget", columnDefinition = "TEXT")
     private String applyTarget;
-
-    @Column(name = "views")
-    private Integer views;
 
     @Column(name = "support_content", columnDefinition = "TEXT")
     private String supportContent;
@@ -57,9 +55,18 @@ public class SupportPolicy {
     @OneToMany(mappedBy = "supportPolicy", cascade = CascadeType.ALL)
     private List<LikedPolicy> likedPolicies = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "supportPolicy", cascade = CascadeType.ALL)
+    private List<ViewedPolicy> viewedPolicies = new ArrayList<>();
+
     public void addLikedPolicy(LikedPolicy likedPolicy) {
         likedPolicy.setSupportPolicy(this);
         this.likedPolicies.add(likedPolicy);
+    }
+
+    public void addViewedPolicy(ViewedPolicy viewedPolicy) {
+        viewedPolicy.setSupportPolicy(this);
+        this.viewedPolicies.add(viewedPolicy);
     }
 
 }

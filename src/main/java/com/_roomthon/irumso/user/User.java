@@ -1,7 +1,8 @@
 package com._roomthon.irumso.user;
 
+import com._roomthon.irumso.policy.view.ViewedPolicy;
 import com._roomthon.irumso.refreshToken.RefreshToken;
-import com._roomthon.irumso.like.LikedPolicy;
+import com._roomthon.irumso.policy.like.LikedPolicy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -45,6 +46,10 @@ public class User implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<LikedPolicy> likedPolicies = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ViewedPolicy> viewedPolicies = new ArrayList<>();
 
     @Builder
     public User(String nickname) {
@@ -91,5 +96,10 @@ public class User implements UserDetails {
     public void addLikedPolicy(LikedPolicy likedPolicy) {
         likedPolicy.setUser(this);
         this.likedPolicies.add(likedPolicy);
+    }
+
+    public void addViewedPolicy(ViewedPolicy viewedPolicy) {
+        viewedPolicy.setUser(this);
+        this.viewedPolicies.add(viewedPolicy);
     }
 }
