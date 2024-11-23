@@ -1,6 +1,7 @@
 package com._roomthon.irumso.refreshToken;
 
 import com._roomthon.irumso.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,11 +11,13 @@ import lombok.*;
 @Entity
 @Table(name = "refresh_token")
 public class RefreshToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "refresh_token_id", updatable = false)
     private Long id;
 
+    @JsonIgnore  // 순환 참조 방지를 위해 User를 무시
     @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
     private User user;
 
