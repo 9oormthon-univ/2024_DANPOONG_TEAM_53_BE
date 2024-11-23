@@ -20,6 +20,13 @@ public interface SupportPolicyRepository extends JpaRepository<SupportPolicy, Lo
             "ORDER BY COUNT(vp) DESC")
     List<SupportPolicy> findTop10ByOrderByViewsDesc(Pageable pageable);
 
+    @Query("SELECT sp " +
+            "FROM SupportPolicy sp " +
+            "LEFT JOIN sp.likedPolicies vp " +
+            "GROUP BY sp.id " +
+            "ORDER BY COUNT(vp) DESC")
+    List<SupportPolicy> findTop10ByOrderByLikesDesc(Pageable pageable);
+
     @Query("""
     SELECT sp
     FROM SupportPolicy sp

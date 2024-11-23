@@ -32,8 +32,28 @@ public class RankController {
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @GetMapping("/view")
-    public ResponseEntity<?> getRank() {
+    public ResponseEntity<?> getRankByView() {
         List<SupportPolicyDto> supportPolicies = rankService.getSupportPolicyRankByView();
+
+        if (supportPolicies == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(BaseResponse.response("실시간 인기 랭킹에서 정책을 찾을 수 없습니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.response(supportPolicies));
+    }
+
+    @Operation(summary = "좋아요 수로 실시간 인기 랭킹 조회", description = "좋아요 수로 실시간 인기 랭킹을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "실시간 인기 랭킹 조회 성공",
+                    content = @Content(schema = @Schema(implementation = SupportPolicyDto.class))),
+            @ApiResponse(responseCode = "404", description = "조회할 수 없음",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @GetMapping("/like")
+    public ResponseEntity<?> getRankByLike() {
+        List<SupportPolicyDto> supportPolicies = rankService.getSupportPolicyRankByLike();
 
         if (supportPolicies == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

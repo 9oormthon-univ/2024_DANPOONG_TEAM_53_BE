@@ -21,4 +21,12 @@ public class RankService {
                 .map(SupportPolicyDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public List<SupportPolicyDto> getSupportPolicyRankByLike() {
+        List<SupportPolicy> supportPolicies = supportPolicyService.getPolicyRankByLike();
+
+        return supportPolicies.stream()
+                .map(SupportPolicyDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }

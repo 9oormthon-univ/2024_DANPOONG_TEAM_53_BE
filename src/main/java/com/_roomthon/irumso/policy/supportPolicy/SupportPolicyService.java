@@ -76,6 +76,14 @@ public class SupportPolicyService {
         return policies;
     }
 
+    public List<SupportPolicy> getPolicyRankByLike() {
+        Pageable pageable = PageRequest.of(0, 20);
+        List<SupportPolicy> policies = supportPolicyRepository.findTop10ByOrderByLikesDesc(pageable);
+        policies.sort((sp1, sp2) -> Integer.compare(sp2.getLikedPolicies().size(), sp1.getLikedPolicies().size()));
+
+        return policies;
+    }
+
     public SupportPolicy getPolicyById(Long policyId){
         return supportPolicyRepository.findById(policyId)
                 .orElseThrow(() -> new IllegalArgumentException("Policy not found"));
