@@ -13,8 +13,12 @@ import java.util.Optional;
 public interface SupportPolicyRepository extends JpaRepository<SupportPolicy, Long> {
     Optional<SupportPolicy> findByServiceId(String serviceId);
 
-    @Query("SELECT sp FROM SupportPolicy sp LEFT JOIN sp.viewedPolicies vp GROUP BY sp.id ORDER BY COUNT(vp) DESC")
-    List<SupportPolicy> findTop10ByOrderByViewsDesc();
+    @Query("SELECT sp " +
+            "FROM SupportPolicy sp " +
+            "LEFT JOIN sp.viewedPolicies vp " +
+            "GROUP BY sp.id " +
+            "ORDER BY COUNT(vp) DESC")
+    List<SupportPolicy> findTop10ByOrderByViewsDesc(Pageable pageable);
 
     @Query("""
     SELECT sp
