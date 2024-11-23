@@ -3,9 +3,11 @@ package com._roomthon.irumso.user;
 import com._roomthon.irumso.global.auth.jwt.TokenProvider;
 import com._roomthon.irumso.refreshToken.RefreshToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,11 +53,6 @@ public class UserService {
     public String getAuthenticatedUserNickname() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();  // 현재 인증된 사용자의 닉네임
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
     }
 
     public User findById(Long id) {

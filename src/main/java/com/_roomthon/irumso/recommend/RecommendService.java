@@ -30,8 +30,8 @@ public class RecommendService {
     private final SupportPolicyRepository supportPolicyRepository;
     private final YouthPolicyRepository youthPolicyRepository;
 
-    public void inputRecommendSurvey(String email, Gender gender, int age, Job job, IncomeLevel incomeLevel) {
-        User user = userService.findByEmail(email);
+    public void inputRecommendSurvey(String nickName, Gender gender, int age, Job job, IncomeLevel incomeLevel) {
+        User user = userService.findByNickname(nickName);
 
         if (user == null) {
             throw new IllegalArgumentException("사용자 정보가 존재하지 않거나 설문 정보를 찾을 수 없습니다.");
@@ -50,8 +50,8 @@ public class RecommendService {
 
     }
 
-    public List<SupportPolicyDto> getRecommendService(String email) {
-        User user = userService.findByEmail(email);
+    public List<SupportPolicyDto> getRecommendService(String nickName) {
+        User user = userService.findByNickname(nickName);
         if (user == null || user.getSurveyRecommendation() == null) {
             throw new IllegalArgumentException("사용자 정보가 존재하지 않거나 설문 정보를 찾을 수 없습니다.");
         }
