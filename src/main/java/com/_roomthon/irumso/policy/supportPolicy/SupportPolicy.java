@@ -2,9 +2,14 @@ package com._roomthon.irumso.policy.supportPolicy;
 
 import com._roomthon.irumso.targetAudience.TargetAudience;
 import com._roomthon.irumso.youthPolicy.ServiceType;
+import com._roomthon.irumso.like.LikedPolicy;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "support_policy")
 @NoArgsConstructor
@@ -31,9 +36,6 @@ public class SupportPolicy {
     @Column(name = "views")
     private Integer views;
 
-    @Column(name = "likes")
-    private Integer likes;
-
     @Column(name = "support_content", columnDefinition = "TEXT")
     private String supportContent;
 
@@ -50,4 +52,14 @@ public class SupportPolicy {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "target_audience_id")
     private TargetAudience targetAudience;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "supportPolicy", cascade = CascadeType.ALL)
+    private List<LikedPolicy> likedPolicies = new ArrayList<>();
+
+    public void addLikedPolicy(LikedPolicy likedPolicy) {
+        likedPolicy.setSupportPolicy(this);
+        this.likedPolicies.add(likedPolicy);
+    }
+
 }

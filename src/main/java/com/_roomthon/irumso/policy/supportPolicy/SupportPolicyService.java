@@ -69,4 +69,13 @@ public class SupportPolicyService {
     public List<SupportPolicy> getPolicyRankByView() {
         return supportPolicyRepository.findTop10ByOrderByViewsDesc();
     }
+
+    public SupportPolicy getPolicyById(Long policyId){
+        return supportPolicyRepository.findById(policyId)
+                .orElseThrow(() -> new IllegalArgumentException("Policy not found"));
+    }
+
+    public SupportPolicy saveSupportPolicy(SupportPolicy supportPolicy){
+        return supportPolicyRepository.save(supportPolicy);
+    }
 }
