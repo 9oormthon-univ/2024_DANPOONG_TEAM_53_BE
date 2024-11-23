@@ -1,7 +1,9 @@
 package com._roomthon.irumso.user;
 
 import com._roomthon.irumso.refreshToken.RefreshToken;
+import com._roomthon.irumso.like.LikedPolicy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com._roomthon.irumso.user.suveyInfo.SurveyRecommendation;
 import jakarta.persistence.*;
@@ -10,8 +12,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,6 +41,10 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "survey_recommendation_id")
     private SurveyRecommendation surveyRecommendation;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<LikedPolicy> likedPolicies = new ArrayList<>();
 
     @Builder
     public User(String nickname) {
@@ -78,5 +86,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void addLikedPolicy(LikedPolicy likedPolicy) {
+        likedPolicy.setUser(this);
+        this.likedPolicies.add(likedPolicy);
     }
 }

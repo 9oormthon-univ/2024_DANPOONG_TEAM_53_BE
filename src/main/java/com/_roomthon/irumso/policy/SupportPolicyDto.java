@@ -29,7 +29,7 @@ public class SupportPolicyDto {
                 .serviceName(supportPolicy.getServiceName())
                 .serviceField(supportPolicy.getServiceField())
                 .views(supportPolicy.getViews())
-                .likes(supportPolicy.getLikes())
+                .likes(supportPolicy.getLikedPolicies().size())
                 .supportContent(supportPolicy.getSupportContent())
                 .purpose(supportPolicy.getPurpose())
                 .applyTarget(supportPolicy.getApplyTarget())
