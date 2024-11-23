@@ -30,19 +30,22 @@ public class BoardPostController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> createPost(@RequestParam String title,
                                                           @RequestParam String content,
+                                                          @RequestParam Long categoryId,  // 카테고리 ID 추가
                                                           @RequestParam(required = false) MultipartFile image) throws IOException {
         String nickname = userService.getAuthenticatedUserNickname();
-        BoardPost boardPost = boardPostService.createBoardPost(nickname, title, content, image);
+        BoardPost boardPost = boardPostService.createBoardPost(nickname, title, content, categoryId, image); // categoryId 전달
 
-        // 응답에 author, createdAt, updatedAt 추가
+        // 응답에 category 정보 추가
         Map<String, Object> response = Map.of(
                 "author", boardPost.getCreatedBy().getNickname(),
                 "createdAt", boardPost.getCreatedAt(),
-                "updatedAt", boardPost.getUpdatedAt()  // 응답에 시간 추가
+                "updatedAt", boardPost.getUpdatedAt(),
+                "category", boardPost.getCategory().getName()
         );
 
         return ResponseEntity.ok(response);
     }
+
 
     @Operation(summary = "게시글 수정", description = "게시글을 수정합니다.")
     @ApiResponses(value = {
@@ -54,19 +57,22 @@ public class BoardPostController {
     public ResponseEntity<Map<String, Object>> updatePost(@PathVariable Long postId,
                                                           @RequestParam String title,
                                                           @RequestParam String content,
+                                                          @RequestParam Long categoryId,  // 카테고리 ID 추가
                                                           @RequestParam(required = false) MultipartFile image) throws IOException {
-        BoardPost updatedPost = boardPostService.updateBoardPost(postId, title, content, image);
+        BoardPost updatedPost = boardPostService.updateBoardPost(postId, title, content, categoryId, image); // categoryId 전달
 
-        // 응답에 제목, 내용, createdAt, updatedAt 추가
+        // 응답에 category 정보 추가
         Map<String, Object> response = Map.of(
                 "title", updatedPost.getTitle(),
                 "content", updatedPost.getContent(),
                 "createdAt", updatedPost.getCreatedAt(),
-                "updatedAt", updatedPost.getUpdatedAt()  // 응답에 시간 추가
+                "updatedAt", updatedPost.getUpdatedAt(),
+                "category", updatedPost.getCategory().getName()  // 카테고리 이름 추가
         );
 
         return ResponseEntity.ok(response);
     }
+
 
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.")
     @ApiResponses(value = {

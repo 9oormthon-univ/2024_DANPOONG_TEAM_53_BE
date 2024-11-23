@@ -26,19 +26,28 @@ public class BoardPostService {
     private final BoardPostRepository boardPostRepository;
     private final BoardPostLikeRepository boardPostLikeRepository;
     private final BoardPostViewRecordRepository boardPostViewRecordRepository;
-    private final BoardCommentRepository boardCommentRepository;  // BoardCommentRepository 추가
+    private final BoardCommentRepository boardCommentRepository;
+    private final BoardCategoryRepository boardCategoryRepository;
 
     // 게시글 작성
-    public BoardPost createBoardPost(String nickname, String title, String content, MultipartFile image) throws IOException {
+    public BoardPost createBoardPost(String nickname, String title, String content, Long categoryId, MultipartFile image) throws IOException {
+        // 작성자 정보 조회
         User user = userService.findByNickname(nickname);
 
+        // 카테고리 조회
+        BoardCategory category = boardCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+
+        // 이미지 업로드
         String imageUrl = (image != null && !image.isEmpty()) ? uploadImage(image) : null;
 
+        // 게시글 생성
         BoardPost boardPost = BoardPost.builder()
                 .title(title)
                 .content(content)
                 .createdBy(user)
                 .authorNickname(user.getNickname())
+                .category(category)  // 카테고리 설정
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .imageUrl(imageUrl)
@@ -47,14 +56,23 @@ public class BoardPostService {
         return boardPostRepository.save(boardPost);
     }
 
+
     // 게시글 수정
-    public BoardPost updateBoardPost(Long postId, String title, String content, MultipartFile image) throws IOException {
+    public BoardPost updateBoardPost(Long postId, String title, String content, Long categoryId, MultipartFile image) throws IOException {
+        // 게시글 조회
         BoardPost existingPost = boardPostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
+        // 카테고리 조회
+        BoardCategory category = boardCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+
+        // 게시글 수정
         existingPost.setTitle(title);
         existingPost.setContent(content);
+        existingPost.setCategory(category);  // 카테고리 수정
 
+        // 이미지 수정
         String imageUrl = (image != null && !image.isEmpty()) ? uploadImage(image) : existingPost.getImageUrl();
         existingPost.setImageUrl(imageUrl);
 
@@ -62,6 +80,7 @@ public class BoardPostService {
 
         return boardPostRepository.save(existingPost);
     }
+
 
     @Transactional
     public void deleteBoardPost(Long postId) {

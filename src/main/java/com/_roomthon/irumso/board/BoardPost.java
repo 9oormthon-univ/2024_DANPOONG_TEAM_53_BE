@@ -21,6 +21,10 @@ public class BoardPost {
     private String title;
     private String content;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false) // 주
+    private BoardCategory category;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")  // 외래 키 설정
     private User createdBy;  // 작성자
