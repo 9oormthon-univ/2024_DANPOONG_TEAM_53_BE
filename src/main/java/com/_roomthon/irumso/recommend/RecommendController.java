@@ -45,7 +45,7 @@ public class RecommendController {
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
 
-        List<SupportPolicyDto> supportPolicies = recommendService.getRecommendService(user.getEmail());
+        List<SupportPolicyDto> supportPolicies = recommendService.getRecommendService(user.getNickname());
 
         if (supportPolicies == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -75,7 +75,7 @@ public class RecommendController {
         }
 
         try{
-            recommendService.inputRecommendSurvey(user.getEmail(), gender, age, job, incomeLevel);
+            recommendService.inputRecommendSurvey(user.getNickname(), gender, age, job, incomeLevel);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
