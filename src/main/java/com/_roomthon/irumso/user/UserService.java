@@ -55,8 +55,7 @@ public class UserService {
         return authentication.getName();  // 현재 인증된 사용자의 닉네임
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }
